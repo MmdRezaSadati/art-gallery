@@ -29,6 +29,7 @@
 .img-cont {
   background-color: black;
   z-index: -1;
+  width: 100%;
 }
 
 .category-card h3 {
