@@ -1,63 +1,22 @@
+// models/paymentModel.js
 const mongoose = require("mongoose");
 
 const paymentSchema = new mongoose.Schema({
-  resultInfo: {
-    resultStatus: {
-      type: String,
-      required: true,
-    },
-    resultCode: {
-      type: String,
-      required: true,
-    },
-    resultMsg: {
-      type: String,
-      required: true,
-    },
-  },
-  txnId: {
+  stripePaymentIntentId: {
     type: String,
     required: true,
   },
-  bankTxnId: {
+  amount: {
+    type: Number,
+    required: true,
+  },
+  currency: {
     type: String,
     required: true,
   },
-  orderId: {
+  receipt_email: {
     type: String,
-    required: true,
-  },
-  txnAmount: {
-    type: String,
-    required: true,
-  },
-  txnType: {
-    type: String,
-    required: true,
-  },
-  gatewayName: {
-    type: String,
-    required: true,
-  },
-  bankName: {
-    type: String,
-    required: true,
-  },
-  mid: {
-    type: String,
-    required: true,
-  },
-  paymentMode: {
-    type: String,
-    required: true,
-  },
-  refundAmt: {
-    type: String,
-    required: true,
-  },
-  txnDate: {
-    type: String,
-    required: true,
+    required: false,
   },
   createdAt: {
     type: Date,
