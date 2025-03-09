@@ -1,12 +1,14 @@
 const mongoose = require("mongoose");
-const MONGO_URI = process.env.MONGO_URI;
 
+// This file handles the connection to the MongoDB database using Mongoose.
 const connectDatabase = () => {
   mongoose
-    .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-      console.log("Mongoose Connected");
-    });
+    .connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then(() => console.log("MongoDB Connected"))
+    .catch((err) => console.error("MongoDB connection error:", err));
 };
 
 module.exports = connectDatabase;
