@@ -4,6 +4,8 @@
   z-index: 6;
   background-color: rgba(0, 0, 0, 0.2);
   margin: auto;
+  height: 100%;
+  animation: fadeIn 0.3s;
 }
 
 .address-modal-container .address-input-container {
@@ -11,10 +13,10 @@
   inset: 0;
   background-color: rgb(255, 255, 255);
   margin: auto;
-  width: 290px;
-  height: 520px;
   text-align: center;
   border-radius: 10px;
+  animation: slideIn 0.3s;
+  height: max-content;
 }
 
 .address-input-container h1 {
@@ -46,7 +48,7 @@
 .address-modal-container .btn-container {
   display: flex;
   justify-content: space-between;
-  padding: 0 20px;
+  padding:10px  20px 25px;
 }
 
 .address-modal-container .btn-container button {
@@ -71,4 +73,17 @@
     width: 390px;
   }
 
+}
+
+
+/* Keyframes for fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Keyframes for slide-in animation */
+@keyframes slideIn {
+  from { transform: translateY(-20px); }
+  to { transform: translateY(0); }
 }

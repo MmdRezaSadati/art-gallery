@@ -1,19 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
+import DeleteConfirmationModal from "../../../components/Modals/DeleteConfirmationModal/DeleteConfirmationModal.jsx";
 import { useAddress } from "../../../contexts/AddressProvider.js";
+import { useAuth } from "../../../contexts/AuthProvider.js";
 import { useUserData } from "../../../contexts/UserDataProvider.js";
 import { removeAddressService } from "../../../services/address-services/removeAddressService";
-import { useAuth } from "../../../contexts/AuthProvider.js";
+import {AddressModal} from "../../Checkout/components/AddressModal/AddressModal";
 import "./Addresses.css";
-import { RiAddFill } from "react-icons/ri";
-import { useState } from "react";
-import { toast } from "react-hot-toast";
-import { AddressModal } from "../../Checkout/components/AddressModal/AddressModal";
 
 export const Addresses = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const { auth } = useAuth();
-
   const { userDataState, dispatch } = useUserData();
   const {
     setIsEdit,
@@ -21,40 +16,30 @@ export const Addresses = () => {
     isAddressModalOpen,
     setIsAddressModalOpen,
   } = useAddress();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(null);
 
-  const deleteAddress = async (address) => {
+  const confirmDeleteAddress = async () => {
     try {
-      setLoading(true);
-      setError("");
-      const response = await removeAddressService(address, auth.token);
+      const response = await removeAddressService(selectedAddress, auth.token);
       if (response.status === 200) {
-        toast.success(`${address.name}'s address successfully deleted!`);
         dispatch({ type: "SET_ADDRESS", payload: response.data.addressList });
       }
     } catch (error) {
-      setLoading(false);
       console.error(error);
     } finally {
-      setLoading(false);
+      setShowDeleteModal(false);
     }
   };
 
-  const editButtonHandler = (add) => {
-    setIsAddressModalOpen(true);
-    setAddressForm(add);
-    setIsEdit(true);
-  };
-
-  const addAddressHandler = () => {
-    setIsAddressModalOpen(true);
+  const handleDeleteClick = (address) => {
+    setSelectedAddress(address);
+    setShowDeleteModal(true);
   };
   return (
     <div className="address-section-container">
       <div className="add-address-btn-container">
-        <button onClick={addAddressHandler}>
-          <RiAddFill className="plus" />
-          New Address
-        </button>
+        <button onClick={() => setIsAddressModalOpen(true)}>New Address</button>
       </div>
       <div className="profile-address-container">
         {userDataState.addressList.length ? (
@@ -65,18 +50,22 @@ export const Addresses = () => {
               <div className="address-card" key={_id}>
                 <p className="name">{name}</p>
                 <p className="address">
-                  <span>Address:</span> {street}, {city}, {state}, {country} -{" "}
-                  {pincode}
+                  {street}, {city}, {state}, {country} - {pincode}
                 </p>
-                <p className="phone">
-                  <span>Phone: </span>
-                  {phone}
-                </p>
+                <p className="phone">{phone}</p>
                 <div className="address-btn-container">
-                  <button onClick={() => editButtonHandler(address)}>
+                  <button
+                    onClick={() => {
+                      setIsAddressModalOpen(true);
+                      setAddressForm(address);
+                      setIsEdit(true);
+                    }}
+                  >
                     Edit
                   </button>
-                  <button onClick={() => deleteAddress(address)}>Delete</button>
+                  <button onClick={() => handleDeleteClick(address)}>
+                    Delete
+                  </button>
                 </div>
               </div>
             );
@@ -87,6 +76,13 @@ export const Addresses = () => {
       </div>
 
       {isAddressModalOpen && <AddressModal />}
+      {showDeleteModal && (
+        <DeleteConfirmationModal
+          itemName={selectedAddress?.name}
+          onConfirm={confirmDeleteAddress}
+          onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
     </div>
   );
 };
